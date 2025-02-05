@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ChatHistory {
+  id            String    @id @default(uuid())
+  walletAddress String    @map("wallet_address")
+  messages      Message[]
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  @@index([walletAddress])
+  @@map("chat_histories")
+}
+
+model Message {
+  id            String      @id @default(uuid())
+  text          String
+  sender        SenderType
+  isHTML        Boolean     @default(false) @map("is_html")
+  timestamp     DateTime    @default(now())
+  chatHistory   ChatHistory @relation(fields: [chatHistoryId], references: [id], onDelete: Cascade)
+  chatHistoryId String      @map("chat_history_id")
+
+  @@map("messages")
+}
+
+enum SenderType {
+  user
+  llm
+}
+
+// Add your models here 
