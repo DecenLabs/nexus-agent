@@ -38,6 +38,45 @@ export interface Tool {
   ) => Promise<string> | string; // Function to execute the tool
 }
 
+// export interface ProtocolConfig {
+//   network: NetworkType;
+//   accountKey: string;
+//   isTestnet: boolean;
+// }
+
+export interface TradeParams {
+  symbol: string;
+  quantity: number;
+  price: number;
+  side: 'BUY' | 'SELL';
+}
+
+export interface LendingParams {
+  asset: string;
+  amount: number;
+  duration?: number;
+}
+
+export interface MarketData {
+  symbol: string;
+  price: number;
+  volume: number;
+  timestamp: number;
+}
+
+export interface LendingRate {
+  asset: string;
+  supplyRate: number;
+  borrowRate: number;
+  utilization: number;
+}
+
+export interface ProtocolResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
+
 // Mapping of different coin names/variants to their standardized symbol
 // This helps in recognizing different ways users might refer to the same coin
 export const COIN_SYNONYMS: Record<string, string> = {
@@ -213,3 +252,8 @@ interface Liquidation {
 }
 
 export type { Liquidation };
+
+export interface ProtocolConfig {
+    isTestnet: boolean;
+    accountKey: string;
+}

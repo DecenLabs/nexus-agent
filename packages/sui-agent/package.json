@@ -16,6 +16,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@bluefin-exchange/bluefin-v2-client": "^6.1.29",
     "@mysten/sui": "1.1.0",
     "aftermath-ts-sdk": "^1.2.49",
     "atoma-sdk": "github:atoma-network/atoma-sdk-typescript",
