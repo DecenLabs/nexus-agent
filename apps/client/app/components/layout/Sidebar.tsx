@@ -16,7 +16,6 @@ import {
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import api from '../../lib/api';
-import GoogleLoginButton from '../GoogleLoginButton';
 
 interface Chat {
   text: string;
@@ -133,7 +132,6 @@ const Sidebar = () => {
           </div>
         </div>
       )}
-      <GoogleLoginButton />
 
       {/* Social Links */}
       <div className="p-4 border-t border-orange-100">

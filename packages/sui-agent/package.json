@@ -18,6 +18,7 @@
   "dependencies": {
     "@bluefin-exchange/bluefin-v2-client": "^6.1.29",
     "@mysten/sui": "1.1.0",
+    "@suilend/sdk": "^1.1.38",
     "aftermath-ts-sdk": "^1.2.49",
     "atoma-sdk": "github:atoma-network/atoma-sdk-typescript",
     "axios": "^1.7.9",

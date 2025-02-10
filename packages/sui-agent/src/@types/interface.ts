@@ -7,6 +7,16 @@ export interface IntentAgentResponse {
   additional_info_required: null | string[]; // List of additional information fields needed
   tool_arguments: (string | number | boolean | bigint)[]; // Arguments passed to the tool
 }
+export interface LendingParams {
+  asset: string;
+  amount: bigint;
+  walletAddress: string;  // Added wallet address
+}
+
+export interface BorrowParams extends LendingParams {
+  obligationOwnerCapId: string;
+  obligationId: string;
+} 
 
 export type ToolArgument = string | number | boolean | bigint;
 
@@ -49,12 +59,6 @@ export interface TradeParams {
   quantity: number;
   price: number;
   side: 'BUY' | 'SELL';
-}
-
-export interface LendingParams {
-  asset: string;
-  amount: number;
-  duration?: number;
 }
 
 export interface MarketData {
@@ -256,4 +260,18 @@ export type { Liquidation };
 export interface ProtocolConfig {
     isTestnet: boolean;
     accountKey: string;
+}
+
+export interface MarketInfo {
+    supplyRate?: string;
+    borrowRate?: string;
+    utilization?: string;
+}
+
+// If duration is needed, we can add it to the original interface
+export interface LendingParams {
+    asset: string;
+    amount: bigint;
+    walletAddress: string;
+    duration?: number;  // Optional duration parameter
 }

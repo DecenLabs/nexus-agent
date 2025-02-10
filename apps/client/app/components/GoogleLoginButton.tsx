@@ -8,9 +8,7 @@ import BaseModal from "@/app/components/modals/base"
 import { AiFillGoogleCircle } from "react-icons/ai";
 import { FaArrowRight } from "react-icons/fa6";
 
-
 const GoogleLoginButton = () => {
-
     const [modal, setModal] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -77,8 +75,8 @@ const GoogleLoginButton = () => {
             {!isConnected && (
                 <button onClick={() => {
                     setModal(true)
-                }} className={`hidden md:block cursor-pointer bg-orange-400 hover:bg-orange-200 text-white font-bold py-2 px-4 rounded-xl transition `}>
-                    Login <span className="hidden md:inline-block">with zkLogin</span>
+                }} className={`hidden md:block cursor-pointer bg-orange-400 hover:bg-orange-200 text-white font-bold py-3 px-4 rounded-xl transition `}>
+                    zkLogin <span className="hidden md:inline-block">with Google</span>
                 </button>
             )}
 
