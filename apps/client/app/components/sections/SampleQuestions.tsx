@@ -8,9 +8,9 @@ interface SampleQuestionsProps {
 const SampleQuestions: React.FC<SampleQuestionsProps> = ({ handleSend }) => {
   const actions = [
     { icon: TrendingUp, label: 'Trending', description: 'Search the trending tokens' },
-    { icon: Coins, label: 'Stake', description: 'Stake Sol' },
-    { icon: Search, label: 'Trade', description: 'Swap on Jupiter' },
-    { icon: FileText, label: 'Knowledge', description: 'Get developer docs for protocols' }
+    { icon: Coins, label: 'Stake', description: 'Stake SUI' },
+    { icon: Search, label: 'Trade', description: 'Swap on BlueFin' },
+    { icon: FileText, label: 'Knowledge', description: 'Whats price of SUI?' }
   ];
 
   return (

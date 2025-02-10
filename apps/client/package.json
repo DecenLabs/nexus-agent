@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@bluefin-exchange/bluefin-v2-client": "^6.1.29",
     "@mysten/sui": "1.1.0",
     "@mysten/wallet-standard": "^0.13.23",
     "@suiet/wallet-kit": "0.3.2",

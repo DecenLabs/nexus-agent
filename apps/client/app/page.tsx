@@ -9,7 +9,7 @@ import { Send, Plus } from 'lucide-react';
 import Messages from './components/sections/Messages';
 import SampleQuestions from './components/sections/SampleQuestions';
 import LoadingPage from './components/ui/loadingPage';
-import ChatHistory from './components/sections/ChatHistory';
+// import ChatHistory from './components/sections/ChatHistory';
 
 export default function Home() {
   const [messages, setMessages] = useState<
@@ -120,10 +120,9 @@ export default function Home() {
           )}
         </div>
 
-        {/* Chat History Dropdown */}
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <ChatHistory chats={chatHistory} onSelectChat={handleSelectChat} />
-        </div>
+        </div> */}
 
         {/* Messages section - only show if there are messages */}
         {messages.length > 0 ? (
@@ -164,7 +163,7 @@ export default function Home() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Ask the hive anything..."
+              placeholder="Ask the nexus anything..."
               className="w-full px-6 py-4 pr-16 rounded-xl border border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 text-gray-700 placeholder-gray-400 bg-white shadow-lg shadow-orange-100/20"
             />
             <button

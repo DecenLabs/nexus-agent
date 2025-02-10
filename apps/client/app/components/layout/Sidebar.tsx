@@ -54,7 +54,7 @@ const Sidebar = () => {
     <div className="w-64 bg-gradient-to-b from-orange-50 to-white border-r border-orange-100 flex flex-col h-screen">
       <div className="p-6">
         <div className="flex items-center gap-3 mb-6">
-          <img src="/nexus-ai-icon.png" alt="The Hive" className="h-10 w-10" />
+          <img src="/nexus-ai-icon.png" alt="The Nexus" className="h-10 w-10" />
           <span className="font-bold text-2xl text-black font-serif">
             Nexus AI
           </span>

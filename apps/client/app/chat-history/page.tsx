@@ -203,18 +203,38 @@ export default function ChatHistory() {
                                     <X className="h-5 w-5 text-gray-500" />
                                 </button>
                             </div>
-                            <div className="space-y-4 max-h-[600px] overflow-y-auto">
+                            <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
                                 {selectedChat.messages.map((message, index) => (
                                     <div 
                                         key={index}
                                         className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                                     >
-                                        <div className={`max-w-[80%] p-3 rounded-lg ${
-                                            message.sender === 'user' 
-                                                ? 'bg-orange-500 text-white' 
-                                                : 'bg-gray-100 text-gray-800'
-                                        }`}>
-                                            {message.content}
+                                        <div 
+                                            className={`max-w-[80%] p-4 rounded-lg ${
+                                                message.sender === 'user' 
+                                                    ? 'bg-orange-500 text-white' 
+                                                    : 'bg-gray-100 text-gray-800'
+                                            }`}
+                                        >
+                                            <div 
+                                                className="prose prose-sm max-w-none overflow-hidden break-words"
+                                                style={{
+                                                    wordWrap: 'break-word',
+                                                    overflowWrap: 'break-word',
+                                                    whiteSpace: 'pre-wrap',
+                                                    maxWidth: '100%'
+                                                }}
+                                            >
+                                                {typeof message.content === 'string' 
+                                                    ? message.content.split('\n').map((line, i) => (
+                                                        <span key={i}>
+                                                            {line}
+                                                            {i < message.content.split('\n').length - 1 && <br />}
+                                                        </span>
+                                                    ))
+                                                    : JSON.stringify(message.content, null, 2)
+                                                }
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
