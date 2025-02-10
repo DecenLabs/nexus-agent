@@ -1,10 +1,9 @@
 import './globals.css';
 import { Manrope } from 'next/font/google';
-import Header from './components/layout/Header';
-import Providers from '@/app/providers';
 import '@suiet/wallet-kit/style.css';
 import './walletCustomCss.css';
-import Sidebar from './components/layout/Sidebar';
+import ClientLayout from './components/layout/ClientLayout';
+import Providers from '@/app/providers';
 
 const manrope = Manrope({ subsets: ['latin'] });
 
@@ -16,14 +15,9 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`h-[100%] ${manrope.className} bg-gradient-to-b from-white to-gray-100`}>
+      <body className={`${manrope.className} bg-[#F8F9FB] h-screen`}>
         <Providers>
-          <Sidebar>
-            <div className="m-4">
-              <Header />
-              <div>{children}</div>
-            </div>
-          </Sidebar>
+          <ClientLayout>{children}</ClientLayout>
         </Providers>
       </body>
     </html>

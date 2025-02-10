@@ -4,10 +4,12 @@ import PulseLoader from './components/ui/pulseLoader';
 import api from './lib/api';
 import { useWallet } from '@suiet/wallet-kit';
 import JSONFormatter from './utils/JSONFormatter';
+import { Send, Plus } from 'lucide-react';
 
 import Messages from './components/sections/Messages';
 import SampleQuestions from './components/sections/SampleQuestions';
 import LoadingPage from './components/ui/loadingPage';
+import ChatHistory from './components/sections/ChatHistory';
 
 export default function Home() {
   const [messages, setMessages] = useState<
@@ -17,13 +19,13 @@ export default function Home() {
   const [isThinking, setIsThinking] = useState(false);
   const { address, connected } = useWallet();
   const [isLoading, setIsLoading] = useState(false);
+  const [chatHistory, setChatHistory] = useState<{ text: string; timestamp: Date }[]>([]);
 
   // Load chat history when wallet connects
   useEffect(() => {
     if (address && connected) {
       loadChatHistory();
-      // // Send initial wallet connection message
-      // handleSend(`Connected wallet: ${address}`);
+      loadAllChats();
     }
   }, [address, connected]);
 
@@ -36,6 +38,15 @@ export default function Home() {
       console.error('Error loading chat history:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const loadAllChats = async () => {
+    try {
+      const response = await api.get(`/v1/query/all-chats/${address}`);
+      setChatHistory(response.data);
+    } catch (error) {
+      console.error('Error loading chat history:', error);
     }
   };
 
@@ -87,64 +98,98 @@ export default function Home() {
       }
     }
   };
+
+  const handleSelectChat = async (text: string) => {
+    setInputValue(text);
+    handleSend(text);
+  };
+
   if (isLoading) return <LoadingPage />;
   return (
-    <div className="h-[90dvh] w-[90dvw] flex justify-center relative items-center flex-col bg-gradient-to-b from-white to-gray-100">
-      {/* Chat messages */}
-      <div className="flex-grow overflow-y-auto p-4 w-[82dvw] rounded mt-3 bg-transparent relative">
-        {/* Fixed background container */}
-        <div className="fixed inset-0 flex justify-center items-center pointer-events-none">
-          <img src="/atomaLogo.svg" alt="Logo" className="w-[300px] h-[200px] opacity-10" />
+    <div className="h-[calc(100vh-2rem)] flex flex-col">
+      <div className={`flex-1 flex flex-col ${messages.length > 0 ? '' : 'justify-center'}`}>
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 text-transparent bg-clip-text mb-2">
+              How can We help you?
+            </h1>
+            <p className="text-gray-600">Orchestrate a hive mind of DeFi Agents to act on Solana</p>
+          </div>
+          {connected && (
+            <button
+              onClick={() => setMessages([])}
+              className="flex items-center gap-2 px-4 py-2 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+            >
+              <Plus className="h-5 w-5" />
+              <span>New Chat</span>
+            </button>
+          )}
         </div>
 
-        {/* Scrollable content */}
-        <div className="relative z-10">
-          <Messages messages={messages} />
+        {/* Chat History Dropdown */}
+        <div className="mb-4">
+          <ChatHistory chats={chatHistory} onSelectChat={handleSelectChat} />
+        </div>
 
-          {isThinking && (
-            <div className="relative mb-3 p-3 rounded-md w-fit max-w-[70%] bg-gray-300 text-black self-start mr-auto text-left">
-              {/* Please wait... */}
-              <PulseLoader />
+        {/* Messages section - only show if there are messages */}
+        {messages.length > 0 ? (
+          <div className="flex-1 overflow-y-auto mb-6 rounded-2xl bg-white border border-orange-100 shadow-lg shadow-orange-100/20">
+            <div className="relative h-full">
+              <div className="absolute inset-0 flex justify-center items-center pointer-events-none opacity-5">
+                <img src="/nexus-ai-full.png" alt="Logo" className="w-48 h-48" />
+              </div>
+              <div className="relative z-10 p-6">
+                <Messages messages={messages} />
+                {isThinking && (
+                  <div className="relative mb-3 p-4 rounded-xl bg-orange-50 w-fit max-w-[70%]">
+                    <PulseLoader color="#f97316" />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ) : (
+          // Show centered content when no messages
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center mb-6">
+              <img src="/nexus-ai-icon.png" alt="Logo" className="w-12 h-12 mr-2" />
+              <div className="text-3xl font-bold font-serif text-center">Nexus AI</div>
+            </div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 text-transparent bg-clip-text mb-3">
+              How can We help you?
+            </h1>
+            <p className="text-gray-600 text-lg">
+              Orchestrate a hive mind of DeFi Agents to act on Sui
+            </p>
+          </div>
+        )}
+
+        {/* Input section */}
+        <div className={`w-full ${messages.length > 0 ? '' : 'max-w-2xl mx-auto'}`}>
+          <div className="relative">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+              placeholder="Ask the hive anything..."
+              className="w-full px-6 py-4 pr-16 rounded-xl border border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 text-gray-700 placeholder-gray-400 bg-white shadow-lg shadow-orange-100/20"
+            />
+            <button
+              onClick={() => handleSend()}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg shadow-orange-200/30 hover:shadow-orange-200/50"
+            >
+              <Send className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* Only show sample questions when no messages */}
+          {!messages.length && (
+            <div className="mt-8">
+              <SampleQuestions handleSend={handleSend} />
             </div>
           )}
         </div>
-      </div>
-      {/* Input area */}
-
-      {/* Input area */}
-      <div className="w-[90%] max-w-2xl">
-        <div className="flex items-center mt-2">
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Chat with Nexus..."
-            className="flex-grow border-gray-500 border rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            onClick={() => handleSend()}
-            className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
-              />
-            </svg>
-          </button>
-        </div>
-
-        {/* Sample Questions */}
-        <SampleQuestions handleSend={handleSend} />
       </div>
     </div>
   );

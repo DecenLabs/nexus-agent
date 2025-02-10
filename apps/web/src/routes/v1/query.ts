@@ -3,9 +3,12 @@ import { Request, Response } from 'express';
 import { config } from '../../config';
 import Agent from '@atoma-agents/sui-agent/src/agents/SuiAgent';
 import * as ChatHistory from '../../models/ChatHistory';
+import { ChatHistory as PrismaChatHistory } from '../../models/ChatHistory';
+import { PrismaClient } from '@prisma/client';
 
 const suiAgent = new Agent(config.atomaSdkBearerAuth);
 const queryRouter: Router = Router();
+const prisma = new PrismaClient();
 
 // Health check endpoint
 queryRouter.get('/health', (req: Request, res: Response) => {
@@ -79,6 +82,43 @@ queryRouter.get('/history/:walletAddress', async (req: Request, res: Response) =
     res.status(500).json({
       error: 'Internal server error'
     });
+  }
+});
+
+// Get all chats for a wallet
+queryRouter.get('/all-chats/:walletAddress', async (req: Request, res: Response) => {
+  try {
+    const { walletAddress } = req.params;
+
+    const chats = await prisma.chatHistory.findMany({
+      where: {
+        walletAddress: walletAddress,
+      },
+      include: {
+        messages: {
+          where: {
+            sender: 'user',
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+          take: 1,
+        },
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+    });
+
+    const formattedChats = chats.map((chat) => ({
+      text: chat.messages[0]?.content || '',
+      timestamp: chat.updatedAt,
+    }));
+
+    res.status(200).json(formattedChats);
+  } catch (error) {
+    console.error('Error fetching chat history:', error);
+    res.status(500).json({ error: 'Failed to fetch chat history' });
   }
 });
 

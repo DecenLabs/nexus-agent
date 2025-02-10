@@ -10,20 +10,18 @@ datasource db {
 model ChatHistory {
   id            String    @id @default(uuid())
   walletAddress String    @map("wallet_address")
-  messages      Message[]
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
+  messages      Message[]
 
-  @@index([walletAddress])
-  @@map("chat_histories")
+  @@map("chat_history")
 }
 
 model Message {
-  id            String      @id @default(uuid())
-  text          String
+  id            String     @id @default(uuid())
+  content       String
   sender        SenderType
-  isHTML        Boolean     @default(false) @map("is_html")
-  timestamp     DateTime    @default(now())
+  createdAt     DateTime   @default(now()) @map("created_at")
   chatHistory   ChatHistory @relation(fields: [chatHistoryId], references: [id], onDelete: Cascade)
   chatHistoryId String      @map("chat_history_id")
 

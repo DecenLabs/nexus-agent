@@ -1,87 +1,88 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { FiMenu } from 'react-icons/fi';
-import { AiOutlineHome, AiOutlineUser, AiOutlineSetting } from 'react-icons/ai';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useWallet, ConnectButton } from '@suiet/wallet-kit';
+import { 
+  MessageCircle, 
+  Coins, 
+  User, 
+  Clock,
+  Twitter,
+  MessageSquare,
+  ChevronRight
+} from 'lucide-react';
 
-const Sidebar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+const Sidebar = () => {
+  const pathname = usePathname();
+  const { address } = useWallet();
 
-  // Close menu when clicking outside
-  useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (
-        isMobileMenuOpen &&
-        !(event.target as HTMLElement).closest('#mobile-menu') &&
-        !(event.target as HTMLElement).closest('#menu-button')
-      ) {
-        setIsMobileMenuOpen(false);
-      }
-    };
-
-    document.addEventListener('click', handleOutsideClick);
-    return () => document.removeEventListener('click', handleOutsideClick);
-  }, [isMobileMenuOpen]);
+  const navigation = [
+    { name: 'Chats', href: '/', icon: MessageCircle },
+    { name: 'Tokens', href: '/tokens', icon: Coins },
+    { name: 'Account', href: '/account', icon: User },
+    { name: 'Portfolio', href: '/portfolio', icon: Clock },
+  ];
 
   return (
-    <div className="flex h-screen">
-      {/* Desktop Sidebar */}
-      <div className="hidden sm:flex flex-col bg-purple-950 text-white w-16 hover:w-64 group transition-all duration-300">
-        {/* Logo */}
-        <div className="p-4 flex justify-center">
-          <FiMenu size={24} />
+    <div className="w-64 bg-gradient-to-b from-orange-50 to-white border-r border-orange-100 flex flex-col">
+      <div className="p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <img src="/nexus-ai-icon.png" alt="The Hive" className="h-10 w-10" />
+          <span className="font-bold text-2xl text-black font-serif">
+            Nexus AI
+          </span>
         </div>
-
-        {/* Sidebar Items */}
-        <div className="flex-1 space-y-4 mt-4">
-          <div className="flex items-center p-4 hover:bg-gray-700 cursor-pointer">
-            <AiOutlineHome size={24} />
-            <span className="ml-4 opacity-0 group-hover:opacity-100 transition-opacity">Home</span>
-          </div>
-          <div className="flex items-center p-4 hover:bg-gray-700 cursor-pointer">
-            <AiOutlineUser size={24} />
-            <span className="ml-4 opacity-0 group-hover:opacity-100 transition-opacity">
-              Profile
-            </span>
-          </div>
-          <div className="flex items-center p-4 hover:bg-gray-700 cursor-pointer">
-            <AiOutlineSetting size={24} />
-            <span className="ml-4 opacity-0 group-hover:opacity-100 transition-opacity">
-              Settings
-            </span>
-          </div>
-        </div>
+        <ConnectButton className="w-full mb-4" />
       </div>
 
-      {/* Mobile Hamburger Menu */}
-      <div className="sm:hidden">
-        <button
-          id="menu-button"
-          className="fixed top-4 right-4 z-50 p-2 bg-gray-900 text-white rounded"
-          onClick={() => setIsMobileMenuOpen(true)}
-        >
-          <FiMenu size={24} />
-        </button>
+      <nav className="flex-1 px-4">
+        <div className="space-y-1">
+          {navigation.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  isActive
+                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-200'
+                    : 'text-gray-600 hover:bg-orange-50 hover:text-orange-600'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-orange-500'}`} />
+                  {item.name}
+                </div>
+                {isActive && <ChevronRight className="h-4 w-4 text-white" />}
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
 
-        {isMobileMenuOpen && (
-          <div
-            id="mobile-menu"
-            className="fixed inset-0 bg-gray-800/90 text-white flex flex-col z-40 p-4"
-          >
-            <button className="self-end p-2" onClick={() => setIsMobileMenuOpen(false)}>
-              ✖
-            </button>
-            <div className="flex-1 space-y-4 mt-4">
-              <div className="p-4 hover:bg-gray-700 cursor-pointer">Home</div>
-              <div className="p-4 hover:bg-gray-700 cursor-pointer">Profile</div>
-              <div className="p-4 hover:bg-gray-700 cursor-pointer">Settings</div>
-            </div>
+      {address && (
+        <div className="p-4 mx-4 mb-4 rounded-xl bg-gradient-to-r from-orange-50 to-orange-100">
+          <div className="flex items-center gap-3 px-3 py-2">
+            <div className="h-2.5 w-2.5 bg-green-500 rounded-full ring-2 ring-green-200" />
+            <span className="text-sm font-medium text-gray-700">
+              {address.slice(0, 6)}...{address.slice(-4)}
+            </span>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* Main Content */}
-      <main className="flex-1">{children}</main>
+      <div className="p-4 border-t border-orange-100">
+        <div className="flex items-center justify-center gap-6">
+          <Link href="https://twitter.com" className="text-orange-400 hover:text-orange-600 transition-colors">
+            <Twitter className="h-5 w-5" />
+          </Link>
+          <Link href="https://discord.com" className="text-orange-400 hover:text-orange-600 transition-colors">
+            <MessageSquare className="h-5 w-5" />
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };

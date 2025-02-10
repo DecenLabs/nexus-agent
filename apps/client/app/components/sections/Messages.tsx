@@ -12,22 +12,25 @@ interface MessagesProps {
 
 const Messages: React.FC<MessagesProps> = ({ messages }) => {
   return (
-    <div>
-      {' '}
+    <div className="space-y-6">
       {messages.map((message, index) => (
         <div
           key={index}
-          className={`relative mb-3 p-3 rounded-md  w-fit  md:max-w-[40%] break-words opacity-100 ${
-            message.sender === 'user'
-              ? 'bg-blue-500 text-white self-end ml-auto text-right'
-              : 'bg-gray-300 text-black self-start mr-auto text-left'
-          }`}
+          className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
         >
-          {message.isHTML ? (
-            <div dangerouslySetInnerHTML={{ __html: message.text }} />
-          ) : (
-            <div>{message.text}</div>
-          )}
+          <div
+            className={`rounded-xl p-4 max-w-[70%] shadow-lg ${
+              message.sender === 'user'
+                ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-orange-200/30'
+                : 'bg-orange-50 text-gray-800 shadow-orange-100/20'
+            }`}
+          >
+            {message.isHTML ? (
+              <div className="prose prose-orange" dangerouslySetInnerHTML={{ __html: message.text }} />
+            ) : (
+              <div>{message.text}</div>
+            )}
+          </div>
         </div>
       ))}
     </div>

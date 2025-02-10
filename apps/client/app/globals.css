@@ -46,9 +46,32 @@ button {
 } */
 
 .sui-wallet-kit-button {
-  @apply px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors !important;
+  @apply px-4 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg shadow-orange-200/30 hover:shadow-orange-200/50 !important;
 }
 
 .sui-wallet-kit-button span {
   @apply text-sm font-medium !important;
+}
+
+/* Add smooth scrolling */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #fdba74;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #f97316;
 }
