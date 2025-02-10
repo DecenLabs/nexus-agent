@@ -18,10 +18,10 @@ export default async function TokenDetailPage({
     params: { symbol: string }
 }) {
     const { trending, smartMoney } = await getTokenData();
-    
+
     // First try to find in trending (real data)
     let token = trending.find(t => t.symbol.split('-')[0].toLowerCase() === symbol.toLowerCase());
-    
+
     // If not found in trending, check smart money (mock data)
     if (!token) {
         token = smartMoney.find(t => t.symbol.toLowerCase() === symbol.toLowerCase());
@@ -49,7 +49,7 @@ export default async function TokenDetailPage({
                 <Link href="/tokens" className="text-orange-500 hover:text-orange-600 mb-6 inline-block">
                     ← Back to Tokens
                 </Link>
-                
+
                 {/* Token Header */}
                 <div className="flex items-center space-x-4 mb-6">
                     <div className="relative w-12 h-12">
@@ -66,13 +66,6 @@ export default async function TokenDetailPage({
                     </div>
                 </div>
 
-                {/* Candlestick Chart */}
-                {candlestickData.length > 0 && (
-                    <div className="mb-8">
-                        <h2 className="text-lg font-semibold mb-4">Price Chart (15m)</h2>
-                        <CandlestickChart data={candlestickData} />
-                    </div>
-                )}
 
                 {/* Price Information */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -96,6 +89,14 @@ export default async function TokenDetailPage({
                         </div>
                     )}
                 </div>
+
+                {/* Candlestick Chart */}
+                {candlestickData.length > 0 && (
+                    <div className="mb-8">
+                        <h2 className="text-lg font-semibold mb-4">Price Chart (15m)</h2>
+                        <CandlestickChart data={candlestickData} />
+                    </div>
+                )}
 
                 {/* Market Details */}
                 {token?.marketData && (
@@ -129,7 +130,7 @@ export default async function TokenDetailPage({
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div className="space-y-4">
                             <h2 className="text-lg font-semibold mb-4">Additional Information</h2>
                             <div className="grid grid-cols-2 gap-4">
@@ -155,6 +156,8 @@ export default async function TokenDetailPage({
                         </div>
                     </div>
                 )}
+
+
             </div>
         </main>
     );

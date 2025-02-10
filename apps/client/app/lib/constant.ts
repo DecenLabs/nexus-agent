@@ -5,7 +5,17 @@ export const MOCK_TOKENS = [
         price: 1.23,
         priceChange: 5.67,
         volume: 15000000,
-        logoUrl: 'https://raw.githubusercontent.com/suiet/sui-kit/main/icons/sui.png'
+        logoUrl: 'https://raw.githubusercontent.com/suiet/sui-kit/main/icons/sui.png',
+        marketData: {
+            marketPrice: '1230000000000000000',
+            _24hrHighPrice: '1250000000000000000',
+            _24hrLowPrice: '1210000000000000000',
+            bestBidPrice: '1220000000000000000',
+            bestAskPrice: '1240000000000000000',
+            oraclePrice: '1230000000000000000',
+            indexPrice: '1230000000000000000',
+            lastFundingRate: '100000000000'
+        }
     },
     {
         name: 'USDC',

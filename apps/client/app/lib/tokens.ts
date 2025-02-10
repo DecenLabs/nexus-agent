@@ -16,7 +16,6 @@ export function normalizeNumber(value: string): number {
 
 export async function getTokenCandlestickData(symbol: string): Promise<CandlestickData[]> {
     try {
-        console.log(" TokenCandlestickData symbol", symbol);
         const response = await fetch(
             `https://dapi.api.sui-prod.bluefin.io/candlestickData?symbol=${symbol}&interval=15m`,
             {
@@ -32,16 +31,15 @@ export async function getTokenCandlestickData(symbol: string): Promise<Candlesti
 
         const data = await response.json();
 
-        console.log("candlestick data", data);
-
         // Transform the data into candlestick format
-        return data.map((item: any) => ({
-            time: item[0] / 1000, // Convert to Unix timestamp
-            open: normalizeNumber(item[1]),
-            high: normalizeNumber(item[2]),
-            low: normalizeNumber(item[3]),
-            close: normalizeNumber(item[4]),
-            volume: normalizeNumber(item[5])
+        // API returns array in format: [startTime, open, high, low, close, volume, endTime, quoteVolume, trades, takerBuyBaseVolume, takerBuyQuoteVolume, symbol]
+        return data.map((item: any[]) => ({
+            time: item[0] / 1000, // Convert milliseconds to seconds for the chart
+            open: parseFloat(item[1]) / 1e18,
+            high: parseFloat(item[2]) / 1e18,
+            low: parseFloat(item[3]) / 1e18,
+            close: parseFloat(item[4]) / 1e18,
+            volume: parseFloat(item[5]) / 1e18
         }));
     } catch (error) {
         console.error('Error fetching candlestick data:', error);
@@ -77,11 +75,15 @@ export async function getTokenData() {
         // Sort by volume for trending
         const trending = [...tokens].sort((a, b) => b.volume - a.volume);
 
-        // Use mock data for smart money inflows
-        const smartMoney = MOCK_TOKENS.map(token => ({
-            ...token,
-            netInflow: token.volume * 0.15
-        }));
+        // Major tokens for Smart Money Inflows
+        const majorSymbols = ['BTC-PERP', 'ETH-PERP', 'SUI-PERP', 'BNB-PERP', 'SOL-PERP', 'POL-PERP', 'AVAX-PERP'];
+        const smartMoney = tokens
+            .filter(token => majorSymbols.includes(token.symbol))
+            .map(token => ({
+                ...token,
+                netInflow: token.volume * (token.priceChange >= 0 ? 0.15 : -0.15) // Simulate inflow based on price change
+            }))
+            .sort((a, b) => (b.netInflow || 0) - (a.netInflow || 0));
 
         return {
             trending,
@@ -91,11 +93,8 @@ export async function getTokenData() {
     } catch (error) {
         console.error('Error fetching token data:', error);
         return {
-            trending: MOCK_TOKENS,
-            smartMoney: MOCK_TOKENS.map(token => ({
-                ...token,
-                netInflow: token.volume * 0.15
-            }))
+            trending: [],
+            smartMoney: []
         };
     }
 } 

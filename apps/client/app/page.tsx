@@ -69,11 +69,8 @@ export default function Home() {
         let llmResponse = '';
 
         // console log bearer and token and model used
-        console.log('Bearer:', process.env.ATOMASDK_BEARER_AUTH);
         console.log("model used: ", process.env.ATOMA_CHAT_MODEL);
-        console.log('walletAddress:', address);
-        console.log('userMessage:', userMessage);
-        console.log('response:', response);
+        console.log('userMessage:', userMessage, "walletAddress:", address, "response:", response);
 
 
         if (typeof res.response === 'string') {
@@ -109,7 +106,7 @@ export default function Home() {
     <div className="h-[calc(100vh-2rem)] flex flex-col">
       <div className={`flex-1 flex flex-col ${messages.length > 0 ? '' : 'justify-center'}`}>
         <div className="flex items-center justify-between">
-          {connected && (
+          {messages.length > 0 && (
             <button
               onClick={() => setMessages([])}
               className="flex items-center gap-2 px-4 py-2 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"

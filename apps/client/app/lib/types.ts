@@ -38,3 +38,36 @@ export interface CandlestickData {
     volume: number;
 }
 
+export interface Token {
+    name: string;
+    symbol: string;
+    amount: number;
+    value: number;
+    coinType: string;
+    price: number;
+    logoUrl?: string;
+}
+
+export interface Transaction {
+    hash: string;
+    type: string;
+    amount: number;
+    symbol: string;
+    timestamp: Date;
+    status: 'success' | 'pending' | 'failed';
+    senderName: string | null;
+    senderAddress: string;
+    recipients: string[];
+}
+
+export interface NFT {
+    id: string;
+    name: string;
+    imageUrl: string;
+    collection: string;
+    description: string;
+    type: string;
+    latestPrice: number | null;
+}
+
+
