@@ -18,10 +18,10 @@ model ChatHistory {
 }
 
 model Message {
-  id            String     @id @default(uuid())
-  content       String
+  id            String      @id @default(uuid())
+  content       String      @default("")
   sender        SenderType
-  createdAt     DateTime   @default(now()) @map("created_at")
+  createdAt     DateTime    @default(now()) @map("created_at")
   chatHistory   ChatHistory @relation(fields: [chatHistoryId], references: [id], onDelete: Cascade)
   chatHistoryId String      @map("chat_history_id")
 

@@ -7,28 +7,9 @@ const Header = () => {
   const { address, connected } = useWallet();
 
   return (
-    <div className="w-[75dvw] grid grid-cols-1 md:flex justify-between">
-      <span className="flex items-center">
-        <Image src="/coinSageLogo.png" width={50} height={50} alt="atomasage logo" priority />
-        <p
-          style={{
-            fontFamily: 'fantasy'
-          }}
-          className="text-lg text-right font-thin md:text-left"
-        >
-          AtomaSage
-        </p>
-      </span>
-
-      <div className="flex items-center gap-4">
-        {connected && (
-          <span className="text-sm text-gray-600">
-            {address?.slice(0, 6)}...{address?.slice(-4)}
-          </span>
-        )}
-        <div className="w-40 md:block z-20">
-          <ConnectButton label="Connect Wallet" />
-        </div>
+    <div className="fixed top-0 right-0 left-64 h-16 z-50">
+      <div className="flex justify-end items-center h-full px-6">
+        <ConnectButton className='bg-orange-500 text-black' />
       </div>
     </div>
   );

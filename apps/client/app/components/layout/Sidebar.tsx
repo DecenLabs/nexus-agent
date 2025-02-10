@@ -3,29 +3,55 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useWallet, ConnectButton } from '@suiet/wallet-kit';
-import { 
-  MessageCircle, 
-  Coins, 
-  User, 
+import {
+  MessageCircle,
+  Coins,
+  User,
   Clock,
   Twitter,
   MessageSquare,
-  ChevronRight
+  ChevronRight,
+  Plus,
+  ChevronDown
 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import api from '../../lib/api';
+
+interface Chat {
+  text: string;
+  timestamp: Date;
+}
 
 const Sidebar = () => {
   const pathname = usePathname();
-  const { address } = useWallet();
+  const { address, connected } = useWallet();
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [isChatsOpen, setIsChatsOpen] = useState(false);
 
   const navigation = [
-    { name: 'Chats', href: '/', icon: MessageCircle },
     { name: 'Tokens', href: '/tokens', icon: Coins },
     { name: 'Account', href: '/account', icon: User },
     { name: 'Portfolio', href: '/portfolio', icon: Clock },
   ];
 
+  // Load chat history when wallet connects
+  useEffect(() => {
+    if (address && connected) {
+      loadChats();
+    }
+  }, [address, connected]);
+
+  const loadChats = async () => {
+    try {
+      const response = await api.get(`/v1/query/all-chats/${address}`);
+      setChats(response.data);
+    } catch (error) {
+      console.error('Error loading chats:', error);
+    }
+  };
+
   return (
-    <div className="w-64 bg-gradient-to-b from-orange-50 to-white border-r border-orange-100 flex flex-col">
+    <div className="w-64 bg-gradient-to-b from-orange-50 to-white border-r border-orange-100 flex flex-col h-screen">
       <div className="p-6">
         <div className="flex items-center gap-3 mb-6">
           <img src="/nexus-ai-icon.png" alt="The Hive" className="h-10 w-10" />
@@ -33,10 +59,44 @@ const Sidebar = () => {
             Nexus AI
           </span>
         </div>
-        <ConnectButton className="w-full mb-4" />
       </div>
 
-      <nav className="flex-1 px-4">
+      {/* Chat Section */}
+      <div className="px-4">
+        <div className="relative">
+          <Link
+            href="/"
+            className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${isChatsOpen
+              ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-200'
+              : 'text-gray-600 hover:bg-orange-50 hover:text-orange-600'
+            }`}
+            onClick={() => setIsChatsOpen(!isChatsOpen)}
+          >
+            <div className="flex items-center gap-2">
+              <MessageCircle className="h-5 w-5 text-orange-500" />
+              <span className="font-medium flex-1 text-left">Chats</span>
+            </div>
+            <ChevronDown
+              className={`h-4 w-4 transition-transform ${isChatsOpen ? 'rotate-180' : ''}`}
+            />
+          </Link>
+
+          {isChatsOpen && (
+            <Link
+              href="/chat-history"
+              className="block w-full mt-1 px-4 pl-8 py-3 text-gray-600 hover:bg-orange-50 rounded-xl transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <MessageSquare className="h-4 w-4" />
+                <span className="text-sm">Chat History</span>
+              </div>
+            </Link>
+          )}
+        </div>
+      </div>
+
+      {/* Navigation Links */}
+      <nav className="px-4 pb-4 flex-1">
         <div className="space-y-1">
           {navigation.map((item) => {
             const Icon = item.icon;
@@ -45,11 +105,10 @@ const Sidebar = () => {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  isActive
+                className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
                     ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-200'
                     : 'text-gray-600 hover:bg-orange-50 hover:text-orange-600'
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <Icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-orange-500'}`} />
@@ -62,6 +121,7 @@ const Sidebar = () => {
         </div>
       </nav>
 
+      {/* Wallet Address */}
       {address && (
         <div className="p-4 mx-4 mb-4 rounded-xl bg-gradient-to-r from-orange-50 to-orange-100">
           <div className="flex items-center gap-3 px-3 py-2">
@@ -73,6 +133,7 @@ const Sidebar = () => {
         </div>
       )}
 
+      {/* Social Links */}
       <div className="p-4 border-t border-orange-100">
         <div className="flex items-center justify-center gap-6">
           <Link href="https://twitter.com" className="text-orange-400 hover:text-orange-600 transition-colors">

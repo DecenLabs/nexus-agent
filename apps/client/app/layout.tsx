@@ -8,8 +8,8 @@ import Providers from '@/app/providers';
 const manrope = Manrope({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'AtomaSage',
-  description: 'AtomaSage is a simple ai agent that allows you to interact with the LLM model.'
+  title: 'Nexus AI',
+  description: 'Nexus AI is a simple ai agent that allows you to interact with the LLM model.'
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

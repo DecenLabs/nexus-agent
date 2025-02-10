@@ -1,14 +1,34 @@
-import app from './app';
+import express from 'express';
+import cors from 'cors';
+import queryRouter from './routes/v1/query';
 import { connectDB, disconnectDB } from './utils/db';
 
-const port = process.env.PORT || 2512;
+const app: express.Application = express();
+
+// Enable CORS
+app.use(cors());
+
+// Parse JSON bodies
+app.use(express.json());
+
+// Mount the query router at both /v1/query and /query for backward compatibility
+app.use('/v1/query', queryRouter);
+app.use('/query', queryRouter);
+
+// Add a test endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
+const PORT = process.env.PORT || 2512;
 
 async function startServer() {
   try {
     await connectDB();
 
-    const server = app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
+    const server = app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+      console.log(`API available at http://localhost:${PORT}`);
     });
 
     // Handle graceful shutdown
@@ -29,3 +49,5 @@ async function startServer() {
 }
 
 startServer();
+
+export default app;

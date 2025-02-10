@@ -24,15 +24,15 @@ export default function Home() {
   // Load chat history when wallet connects
   useEffect(() => {
     if (address && connected) {
-      loadChatHistory();
+      // Only load chat history for dropdown
       loadAllChats();
     }
   }, [address, connected]);
 
-  const loadChatHistory = async () => {
+  const loadChatHistory = async (chatId: string) => {
     try {
       setIsLoading(true);
-      const response = await api.get(`/query/history/${address}`);
+      const response = await api.get(`/query/history/${chatId}`);
       setMessages(response.data);
     } catch (error) {
       console.error('Error loading chat history:', error);
@@ -99,16 +99,16 @@ export default function Home() {
     }
   };
 
-  const handleSelectChat = async (text: string) => {
-    setInputValue(text);
-    handleSend(text);
+  const handleSelectChat = async (text: string, chatId: string) => {
+    setInputValue('');
+    await loadChatHistory(chatId);
   };
 
   if (isLoading) return <LoadingPage />;
   return (
     <div className="h-[calc(100vh-2rem)] flex flex-col">
       <div className={`flex-1 flex flex-col ${messages.length > 0 ? '' : 'justify-center'}`}>
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between">
           {connected && (
             <button
               onClick={() => setMessages([])}
@@ -129,14 +129,11 @@ export default function Home() {
         {messages.length > 0 ? (
           <div className="flex-1 overflow-y-auto mb-6 rounded-2xl bg-white border border-orange-100 shadow-lg shadow-orange-100/20">
             <div className="relative h-full">
-              <div className="absolute inset-0 flex justify-center items-center pointer-events-none opacity-5">
-                <img src="/nexus-ai-full.png" alt="Logo" className="w-48 h-48" />
-              </div>
               <div className="relative z-10 p-6">
                 <Messages messages={messages} />
                 {isThinking && (
                   <div className="relative mb-3 p-4 rounded-xl bg-orange-50 w-fit max-w-[70%]">
-                    <PulseLoader color="#f97316" />
+                    <PulseLoader />
                   </div>
                 )}
               </div>
@@ -147,10 +144,11 @@ export default function Home() {
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-6">
               <img src="/nexus-ai-icon.png" alt="Logo" className="w-12 h-12 mr-2" />
-              <div className="text-3xl font-bold font-serif text-center">Nexus AI</div>
             </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 text-transparent bg-clip-text mb-3">
-              How can We help you?
+            <h1 className="text-4xl font-bold bg-clip-text mb-3">
+              How
+              <span className="bg-gradient-to-r from-orange-600 to-orange-500 text-transparent bg-clip-text"> Nexus AI </span>
+              can help you?
             </h1>
             <p className="text-gray-600 text-lg">
               Orchestrate a nexus of DeFi Agents to act on Sui

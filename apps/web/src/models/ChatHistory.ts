@@ -1,8 +1,7 @@
 import { prisma } from '../utils/db';
-import type { Message, ChatHistory as PrismaChatHistory } from '@prisma/client'; 
+import type { Message as PrismaMessage, ChatHistory as PrismaChatHistory } from '@prisma/client';
 
-export type IMessage = Message;
-export type IChatHistory = PrismaChatHistory & { messages: Message[] };
+export type IChatHistory = PrismaChatHistory & { messages: PrismaMessage[] };
 
 // Create a new chat history
 export async function createChatHistory(walletAddress: string) {
@@ -29,16 +28,18 @@ export async function findChatHistoryByWallet(walletAddress: string) {
 }
 
 // Add message to chat history
-export async function addMessage(chatHistoryId: string, message: Omit<IMessage, 'id' | 'chatHistoryId'>) {
+export async function addMessage(
+  chatHistoryId: string,
+  message: { text: string; sender: 'user' | 'llm'; timestamp: Date; isHTML: boolean }
+) {
   return prisma.message.create({
     data: {
-      ...message,
+      content: message.text || '',
+      sender: message.sender,
       chatHistory: {
-        connect: {
-          id: chatHistoryId,
-        },
-      },
-    },
+        connect: { id: chatHistoryId }
+      }
+    }
   });
 }
 

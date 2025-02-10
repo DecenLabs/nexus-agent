@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { config } from '../../config';
 import Agent from '@atoma-agents/sui-agent/src/agents/SuiAgent';
 import * as ChatHistory from '../../models/ChatHistory';
-import { ChatHistory as PrismaChatHistory } from '../../models/ChatHistory';
 import { PrismaClient } from '@prisma/client';
 
 const suiAgent = new Agent(config.atomaSdkBearerAuth);
@@ -41,7 +40,7 @@ const handleQuery = async (req: Request, res: Response): Promise<void> => {
 
         // Add user message
         await ChatHistory.addMessage(chatHistory.id, {
-          text: query,
+          text: query || '',
           sender: 'user',
           timestamp: new Date(),
           isHTML: false,
@@ -72,11 +71,25 @@ const handleQuery = async (req: Request, res: Response): Promise<void> => {
 };
 
 // Get chat history endpoint
-queryRouter.get('/history/:walletAddress', async (req: Request, res: Response) => {
+queryRouter.get('/history/:chatId', async (req: Request, res: Response) => {
   try {
-    const { walletAddress } = req.params;
-    const chatHistory = await ChatHistory.findChatHistoryByWallet(walletAddress);
-    res.status(200).json(chatHistory?.messages || []);
+    const { chatId } = req.params;
+    const messages = await prisma.message.findMany({
+      where: {
+        chatHistoryId: chatId,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+    
+    const formattedMessages = messages.map(msg => ({
+      text: msg.content,
+      sender: msg.sender,
+      isHTML: msg.sender === 'llm',
+    }));
+    
+    res.status(200).json(formattedMessages);
   } catch (error) {
     console.error('Error fetching chat history:', error);
     res.status(500).json({
@@ -89,6 +102,7 @@ queryRouter.get('/history/:walletAddress', async (req: Request, res: Response) =
 queryRouter.get('/all-chats/:walletAddress', async (req: Request, res: Response) => {
   try {
     const { walletAddress } = req.params;
+    console.log('Received request for wallet:', walletAddress);
 
     const chats = await prisma.chatHistory.findMany({
       where: {
@@ -96,13 +110,9 @@ queryRouter.get('/all-chats/:walletAddress', async (req: Request, res: Response)
       },
       include: {
         messages: {
-          where: {
-            sender: 'user',
-          },
           orderBy: {
             createdAt: 'desc',
           },
-          take: 1,
         },
       },
       orderBy: {
@@ -110,15 +120,65 @@ queryRouter.get('/all-chats/:walletAddress', async (req: Request, res: Response)
       },
     });
 
-    const formattedChats = chats.map((chat) => ({
-      text: chat.messages[0]?.content || '',
-      timestamp: chat.updatedAt,
-    }));
+    console.log('Database query result:', chats);
 
+    const formattedChats = chats.map((chat) => {
+      // Get the first user message for the chat title
+      const firstUserMessage = chat.messages.find(msg => msg.sender === 'user');
+      return {
+        id: chat.id,
+        text: firstUserMessage?.content || 'Untitled Chat',
+        timestamp: chat.updatedAt,
+        messages: chat.messages.map(msg => ({
+          content: msg.content,
+          sender: msg.sender,
+          timestamp: msg.createdAt
+        }))
+      };
+    });
+
+    console.log('Sending response:', formattedChats);
     res.status(200).json(formattedChats);
   } catch (error) {
-    console.error('Error fetching chat history:', error);
-    res.status(500).json({ error: 'Failed to fetch chat history' });
+    console.error('Error in /all-chats endpoint:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch chat history',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Debug endpoint to check database content
+queryRouter.get('/debug/chats/:walletAddress', async (req: Request, res: Response) => {
+  try {
+    const { walletAddress } = req.params;
+    
+    // Get chat histories
+    const chatHistories = await prisma.chatHistory.findMany({
+      where: { walletAddress },
+      include: { messages: true },
+    });
+
+    // Get message count
+    const messageCount = await prisma.message.count({
+      where: {
+        chatHistory: {
+          walletAddress,
+        },
+      },
+    });
+
+    res.status(200).json({
+      chatHistories,
+      messageCount,
+      diagnostics: {
+        timestamp: new Date(),
+        walletAddress,
+      }
+    });
+  } catch (error) {
+    console.error('Debug endpoint error:', error);
+    res.status(500).json({ error: 'Debug endpoint failed', details: error });
   }
 });
 
@@ -131,5 +191,10 @@ const handleUnsupportedMethod = (req: Request, res: Response): void => {
 
 queryRouter.post('/', handleQuery);
 queryRouter.all('/', handleUnsupportedMethod);
+
+// Add at the beginning of the routes
+queryRouter.get('/test', (req: Request, res: Response) => {
+  res.json({ message: 'Query router is working' });
+});
 
 export default queryRouter;
