@@ -109,12 +109,6 @@ export default function Home() {
     <div className="h-[calc(100vh-2rem)] flex flex-col">
       <div className={`flex-1 flex flex-col ${messages.length > 0 ? '' : 'justify-center'}`}>
         <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 text-transparent bg-clip-text mb-2">
-              How can We help you?
-            </h1>
-            <p className="text-gray-600">Orchestrate a hive mind of DeFi Agents to act on Solana</p>
-          </div>
           {connected && (
             <button
               onClick={() => setMessages([])}
@@ -159,7 +153,7 @@ export default function Home() {
               How can We help you?
             </h1>
             <p className="text-gray-600 text-lg">
-              Orchestrate a hive mind of DeFi Agents to act on Sui
+              Orchestrate a nexus of DeFi Agents to act on Sui
             </p>
           </div>
         )}
