@@ -51,7 +51,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-64 bg-gradient-to-b from-orange-50 to-white border-r border-orange-100 flex flex-col h-screen">
+    <div className="fixed w-64 bg-gradient-to-b from-orange-50 to-white border-r border-orange-100 flex flex-col h-screen">
       <div className="p-6">
         <div className="flex items-center gap-3 mb-6">
           <img src="/nexus-ai-icon.png" alt="The Nexus" className="h-10 w-10" />
@@ -106,9 +106,9 @@ const Sidebar = () => {
                 key={item.name}
                 href={item.href}
                 className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
-                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-200'
-                    : 'text-gray-600 hover:bg-orange-50 hover:text-orange-600'
-                  }`}
+                  ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-200'
+                  : 'text-gray-600 hover:bg-orange-50 hover:text-orange-600'
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <Icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-orange-500'}`} />

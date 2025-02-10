@@ -62,7 +62,7 @@ export default function PortfolioPage() {
     }
 
     return (
-        <main className="container mx-auto px-4 py-8">
+        <main className="max-w-4xl mx-auto p-10">
             {/* Portfolio Header */}
             <div className="mb-8">
                 <h1 className="text-3xl font-bold mb-2">Portfolio</h1>
@@ -184,15 +184,16 @@ export default function PortfolioPage() {
                                                     'text-orange-500'
                                                 }`}>
                                                 {tx.status.charAt(0).toUpperCase() + tx.status.slice(1)}
-                                                <a
-                                                    href={`https://suiscan.xyz/mainnet/tx/${tx.hash}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="flex items-center gap-2 text-sm text-orange-500 hover:text-orange-600 transition-colors"
-                                                >
-                                                    <ExternalLink className="h-4 w-4" />
-                                                </a>
+
                                             </span>
+                                            <a
+                                                href={`https://suiscan.xyz/mainnet/tx/${tx.hash}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex items-center gap-2 text-sm text-orange-500 hover:text-orange-600 transition-colors"
+                                            >
+                                                <ExternalLink className="h-4 w-4" />
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

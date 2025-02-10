@@ -9,7 +9,7 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
     return (
         <div className="flex min-h-screen">
             <Sidebar />
-            <div className="flex-1">
+            <div className="flex-1 ml-64">
                 <Header />
                 <main className="pt-6 px-6">{children}</main>
             </div>

@@ -44,7 +44,7 @@ export default async function TokenDetailPage({
     }
 
     return (
-        <main className="container mx-auto px-4 py-8 mt-3">
+        <main className="max-w-3xl mx-auto p-10 mt-3">
             <div className="bg-white rounded-lg p-6 shadow-lg">
                 <Link href="/tokens" className="text-orange-500 hover:text-orange-600 mb-6 inline-block">
                     ← Back to Tokens
