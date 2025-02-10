@@ -20,7 +20,7 @@ export interface Token {
     priceChange: number;
     volume: number;
     netInflow?: number;
-    logoUrl: string;
+    logoUrl?: string;
     marketData?: BluefinMarketData;
 }
 

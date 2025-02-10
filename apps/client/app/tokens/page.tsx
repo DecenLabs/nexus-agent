@@ -1,8 +1,8 @@
 import React from 'react';
-import { Search } from 'lucide-react';
 import TokenList from '../components/tokens/TokenList';
 import SearchBar from '../components/tokens/SearchBar';
 import { getTokenData } from '@/app/lib/tokens';
+import { Token } from '../lib/types';
 
 export default async function TokensPage() {
     // Fetch token data
@@ -22,7 +22,7 @@ export default async function TokensPage() {
             <section className="mb-12">
                 <h2 className="text-xl font-semibold mb-4">Trending Tokens</h2>
                 <TokenList
-                    tokens={tokenData.trending}
+                    tokens={tokenData.trending as Token[]}
                     type="trending"
                 />
             </section>
@@ -31,7 +31,7 @@ export default async function TokensPage() {
             <section>
                 <h2 className="text-xl font-semibold mb-4">Smart Money Inflows</h2>
                 <TokenList
-                    tokens={tokenData.smartMoney}
+                    tokens={tokenData.smartMoney as Token[]}
                     type="inflow"
                 />
             </section>

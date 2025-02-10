@@ -3,11 +3,11 @@ import { Request, Response } from 'express';
 import { config } from '../../config';
 import Agent from '@atoma-agents/sui-agent/src/agents/SuiAgent';
 import * as ChatHistory from '../../models/ChatHistory';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../../utils/db';
+import type { Message, ChatHistory as PrismaChatHistory } from '../../types/prisma';
 
 const suiAgent = new Agent(config.atomaSdkBearerAuth);
 const queryRouter: Router = Router();
-const prisma = new PrismaClient();
 
 // Health check endpoint
 queryRouter.get('/health', (req: Request, res: Response) => {
@@ -83,7 +83,7 @@ queryRouter.get('/history/:chatId', async (req: Request, res: Response) => {
       },
     });
     
-    const formattedMessages = messages.map(msg => ({
+    const formattedMessages = messages.map((msg: Message) => ({
       text: msg.content,
       sender: msg.sender,
       isHTML: msg.sender === 'llm',
@@ -122,14 +122,13 @@ queryRouter.get('/all-chats/:walletAddress', async (req: Request, res: Response)
 
     console.log('Database query result:', chats);
 
-    const formattedChats = chats.map((chat) => {
-      // Get the first user message for the chat title
-      const firstUserMessage = chat.messages.find(msg => msg.sender === 'user');
+    const formattedChats = chats.map((chat: PrismaChatHistory & { messages: Message[] }) => {
+      const firstUserMessage = chat.messages.find((msg: Message) => msg.sender === 'user');
       return {
         id: chat.id,
         text: firstUserMessage?.content || 'Untitled Chat',
         timestamp: chat.updatedAt,
-        messages: chat.messages.map(msg => ({
+        messages: chat.messages.map((msg: Message) => ({
           content: msg.content,
           sender: msg.sender,
           timestamp: msg.createdAt

@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { createChart } from 'lightweight-charts';
+import { createChart, SingleValueData } from 'lightweight-charts';
 import { CandlestickData } from '@/app/lib/types';
-
+import { HistogramData } from 'lightweight-charts';
 interface CandlestickChartProps {
     data: CandlestickData[];
 }
@@ -46,7 +46,7 @@ export default function CandlestickChart({ data }: CandlestickChartProps) {
             value: item.close,
         }));
 
-        areaSeries.setData(priceData);
+        areaSeries.setData(priceData as SingleValueData[]);
 
         // Create volume series as bars
         const volumeSeries = chart.addHistogramSeries({
@@ -67,7 +67,7 @@ export default function CandlestickChart({ data }: CandlestickChartProps) {
             color: item.close >= item.open ? '#26a69a80' : '#ef535080'
         }));
 
-        volumeSeries.setData(volumeData);
+        volumeSeries.setData(volumeData as HistogramData[]);
 
         // Fit the chart to the data
         chart.timeScale().fitContent();

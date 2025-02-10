@@ -1,6 +1,4 @@
-import { X } from "react-icons"
 import { RxCross1 } from "react-icons/rx";
-
 
 interface IBaseModal {
     visible: boolean

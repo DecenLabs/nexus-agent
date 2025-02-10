@@ -1,0 +1,23 @@
+// Keywords that trigger including wallet address in the message
+export const keywords: string[] = [
+    'balance',
+    'wallet',
+    'account',
+    'transfer',
+    'send',
+    'receive',
+    'transaction',
+    'stake',
+    'unstake',
+    'swap',
+    'bluefin',
+    'suilend',
+    'navi',
+    'trade',
+    'liquidity',
+    'liquidity pool',
+    'liquidity provider',
+    'liquidity provider',
+    'liquidity provider',
+    'liquidity provider',
+]; 

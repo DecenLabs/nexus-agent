@@ -1,4 +1,4 @@
-import { BluefinClient, Networks } from '@bluefin-exchange/bluefin-v2-client';
+import { BluefinClient, Networks, ORDER_SIDE, ORDER_TYPE, ORDER_STATUS } from '@bluefin-exchange/bluefin-v2-client';
 import { ProtocolConfig, TradeParams, MarketData, ProtocolResponse } from '../../@types/interface';
 
 // Define the ExchangeInfo interface based on the actual API response
@@ -83,17 +83,18 @@ export class BluefinProtocol {
 
     public async executeTrade(params: TradeParams): Promise<ProtocolResponse<string>> {
         try {
-            const order = await this.client.submitOrder({
+            const order = await this.client.postOrder({
                 symbol: params.symbol,
-                price: params.price.toString(),
-                quantity: params.quantity.toString(),
-                side: params.side,
-                orderType: 'LIMIT'
+                price: Number(params.price),
+                quantity: Number(params.quantity),
+                side: params.side as ORDER_SIDE,
+                orderType: 'LIMIT' as ORDER_TYPE,
+                leverage: 1
             });
 
             return {
                 success: true,
-                data: order.orderId
+                data: order.data.id.toString()
             };
         } catch (error) {
             return {
@@ -105,11 +106,35 @@ export class BluefinProtocol {
 
     public async getOrderStatus(orderId: string): Promise<ProtocolResponse<OrderResponse>> {
         try {
-            // Using the correct method name from the Bluefin client
-            const status = await this.client.getOrderById(orderId) as OrderResponse;
+            const response = await this.client.getUserOrders({
+                orderId : Number(orderId),
+                statuses: [
+                    ORDER_STATUS.OPEN,
+                    ORDER_STATUS.PARTIAL_FILLED,
+                    ORDER_STATUS.FILLED,
+                    ORDER_STATUS.CANCELLED,
+                    ORDER_STATUS.REJECTED
+                ]
+            });
+
+            if (!response.data || response.data.length === 0) {
+                return {
+                    success: false,
+                    error: `Order not found: ${orderId}`
+                };
+            }
+
+            const order = response.data[0];
             return {
                 success: true,
-                data: status
+                data: {
+                    orderId: order.id.toString(),
+                    status: order.orderStatus,
+                    symbol: order.symbol,
+                    side: order.side,
+                    price: order.price.toString(),
+                    quantity: order.quantity.toString()
+                }
             };
         } catch (error) {
             return {

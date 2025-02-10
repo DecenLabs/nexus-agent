@@ -153,30 +153,32 @@ export default function Home() {
         )}
 
         {/* Input section */}
-        <div className={`w-full ${messages.length > 0 ? '' : 'max-w-2xl mx-auto'}`}>
-          <div className="relative">
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Ask the nexus anything..."
-              className="w-full px-6 py-4 pr-16 rounded-xl border border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 text-gray-700 placeholder-gray-400 bg-white shadow-lg shadow-orange-100/20"
-            />
-            <button
-              onClick={() => handleSend()}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg shadow-orange-200/30 hover:shadow-orange-200/50"
-            >
-              <Send className="h-5 w-5" />
-            </button>
-          </div>
-
-          {/* Only show sample questions when no messages */}
-          {!messages.length && (
-            <div className="mt-8">
-              <SampleQuestions handleSend={handleSend} />
+        <div className="items-center justify-center"> 
+          <div className={`max-w-4xl p-5 mb-5  ${messages.length > 0 ? '' : 'max-w-2xl mx-auto'}`}>
+            <div className="relative">
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                placeholder="Ask the nexus anything..."
+                className="w-full px-6 py-4 pr-16 rounded-xl border border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 text-gray-700 placeholder-gray-400 bg-white shadow-lg shadow-orange-100/20"
+              />
+              <button
+                onClick={() => handleSend()}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg shadow-orange-200/30 hover:shadow-orange-200/50"
+              >
+                <Send className="h-5 w-5" />
+              </button>
             </div>
-          )}
+
+            {/* Only show sample questions when no messages */}
+            {!messages.length && (
+              <div className="mt-8">
+                <SampleQuestions handleSend={handleSend} />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { keywords } from '../data';
 import api from '../lib/api';
 import JSONFormatter from './JSONFormatter';
+
 class Utils {
   public handleSend = async (
     inputValue: string,
@@ -29,7 +30,7 @@ class Utils {
       try {
         let modifiedMessage = userMessage;
 
-        const containsKeywords = keywords.some((keyword) =>
+        const containsKeywords = keywords.some((keyword: string) =>
           userMessage.toLowerCase().includes(keyword)
         );
 
@@ -66,4 +67,5 @@ class Utils {
     }
   };
 }
+
 export default Utils;
