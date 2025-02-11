@@ -1,0 +1,36 @@
+{
+    "$schema": "https://railway.app/railway.schema.json",
+    "build": {
+        "builder": "nixpacks",
+        "watchPatterns": [
+            "/apps/client/**",
+            "/apps/web/**",
+            "/packages/**"
+        ]
+    },
+    "deploy": {
+        "numReplicas": 1,
+        "restartPolicyType": "on-failure",
+        "restartPolicyMaxRetries": 3
+    },
+    "services": {
+        "web": {
+            "path": "apps/web",
+            "startCommand": "node dist/server.js",
+            "healthcheck": {
+                "path": "/v1/health",
+                "timeout": 100
+            },
+            "buildCommand": "cd ../.. && pnpm install && pnpm build"
+        },
+        "client": {
+            "path": "apps/client",
+            "startCommand": "next start",
+            "healthcheck": {
+                "path": "/",
+                "timeout": 100
+            },
+            "buildCommand": "cd ../.. && pnpm install && pnpm build"
+        }
+    }
+}

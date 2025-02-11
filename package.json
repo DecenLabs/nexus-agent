@@ -6,7 +6,10 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "test": "turbo test"
+    "test": "turbo test",
+    "start": "turbo run start",
+    "railway:build": "pnpm install && pnpm build",
+    "railway:start": "pnpm start"
   },
   "devDependencies": {
     "@turbo/gen": "^1.11.3",
