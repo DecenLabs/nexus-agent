@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const API_KEY = 'vMMZkSg10f7fLHjFGUkN8ZddwddyeY';
+const API_KEY = 'vMMZkSg10f7fLHjFGUkN8ZdhwddyeY';
 const BASE_URL = 'https://api.blockberry.one/sui/v1';
 
 export async function GET(request: Request) {

@@ -5,7 +5,7 @@ export async function fetchUserTokens(address: string) {
             method: 'GET',
             headers: {
                 'accept': '*/*',
-                'x-api-key': 'AtbLKZBMv6ykd5tYwwPJq5qtHiKUK'
+                'x-api-key': 'vMMZkSg10f7fLHjFGUkN8ZdhwddyeY'
             }
         });
 

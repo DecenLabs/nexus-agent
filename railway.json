@@ -21,7 +21,7 @@
                 "path": "/v1/health",
                 "timeout": 100
             },
-            "buildCommand": "cd ../.. && pnpm install && pnpm build"
+            "buildCommand": "cd ../.. && pnpm install && prisma generate && prisma migrate deploy && pnpm build"
         },
         "client": {
             "path": "apps/client",

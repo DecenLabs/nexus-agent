@@ -2,6 +2,7 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import v1routes from './routes/v1';
 import { connectDB } from './utils/db';
+import { PrismaClient } from '@prisma/client'
 //import queryRouter from './routes/v1/query';
 
 /**
@@ -20,7 +21,12 @@ const app: Application = express();
  */
 app.use(express.json()); // Parse JSON request bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
-app.use(cors()); // Enable CORS for all routes
+app.use(cors({
+    origin: process.env.FRONTEND_URL || '*',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+})); // Enable CORS for all routes
 
 /**
  * API Routes:
@@ -29,8 +35,17 @@ app.use(cors()); // Enable CORS for all routes
  */
 app.use(v1routes);
 
-// Connect to MongoDB
-connectDB().catch(console.error);
+const prisma = new PrismaClient()
+
+// Add this after your existing middleware setup
+prisma.$connect()
+  .then(() => {
+    console.log('Successfully connected to database')
+  })
+  .catch((error) => {
+    console.error('Failed to connect to database:', error)
+    process.exit(1)
+  })
 
 /**
  * @exports app
